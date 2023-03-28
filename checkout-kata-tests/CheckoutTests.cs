@@ -109,5 +109,22 @@ namespace checkout_kata_tests
 
             sut.GetTotalPrice().Should().Be(unitPrice);
         }
+
+        [Fact]
+        public void ScanningItemMatchingSpecialOfferGivesCorrectPrice()
+        {
+            var sku = "A";
+            var unitPrice = 50;
+            var qty = 3;
+            var offerPrice = 130;
+
+            var sut = new Checkout(new ProductBuilder().WithSku(sku).WithUnitPrice(unitPrice).WithSpecialOffer(qty, offerPrice).Build());
+
+            sut.Scan(sku);
+            sut.Scan(sku);
+            sut.Scan(sku);
+
+            sut.GetTotalPrice().Should().Be(offerPrice);
+        }
     }
 }

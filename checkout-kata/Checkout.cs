@@ -43,6 +43,11 @@
                     return this.Quantity * this.Product.UnitPrice;
                 }
 
+                if (this.Product.OfferPrice.Quantity == this.Quantity)
+                {
+                    return Product.OfferPrice.UnitPrice;
+                }
+
                 return 0;
             }
         }
