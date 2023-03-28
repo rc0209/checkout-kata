@@ -1,5 +1,7 @@
 namespace checkout_kata_tests
 {
+    using System.Collections.Generic;
+
     using checkout_kata;
     using checkout_kata_contracts;
     using FluentAssertions;
@@ -163,6 +165,38 @@ namespace checkout_kata_tests
             sut.Scan(sku);
 
             sut.GetTotalPrice().Should().Be(offerPrice * 2);
+        }
+
+        [Theory]
+        [MemberData(nameof(ProductTestData))]
+        public void ScanningMultipleItemsMultipleTimesWithSpecialsGivesCorrectPrice(string[] itemsToScan, int expectedTotal)
+        {
+            var sut = GetCheckoutManagerWithFullProductCatalog();
+
+            foreach (var item in itemsToScan)
+            {
+                sut.Scan(item);
+            }
+
+            sut.GetTotalPrice().Should().Be(expectedTotal);
+        }
+
+        public static IEnumerable<object[]> ProductTestData => new List<object[]>
+        {
+            new object[] {new List<string> {"A", "B", "A", "D", "A"}, 175},
+            new object[] {new List<string> {"A", "B", "A", "B", "C"}, 165},
+            new object[] {new List<string> {"A", "B", "C", "D"}, 115},
+            new object[] {new List<string> {"D", "C", "B", "A"}, 115}
+        };
+
+        private static Checkout GetCheckoutManagerWithFullProductCatalog()
+        {
+            return new Checkout(
+                new ProductBuilder().WithSku("A").WithUnitPrice(50).WithSpecialOffer(3, 130).Build(),
+                new ProductBuilder().WithSku("B").WithUnitPrice(30).WithSpecialOffer(2, 45).Build(),
+                new ProductBuilder().WithSku("C").WithUnitPrice(20).Build(),
+                new ProductBuilder().WithSku("D").WithUnitPrice(15).Build()
+            );
         }
     }
 }
