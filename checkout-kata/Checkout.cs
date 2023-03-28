@@ -8,12 +8,12 @@
     public class Checkout : ICheckout
     {
         private readonly IReadOnlyDictionary<string, Product> products;
-        private readonly ConcurrentBag<Product> items;
+        private readonly ConcurrentDictionary<string, BasketItem> items;
 
         public Checkout(params Product[] products)
         {
             this.products = products.ToDictionary(k => k.Sku, v => v);
-            this.items = new ConcurrentBag<Product>();
+            this.items = new ConcurrentDictionary<string, BasketItem>();
         }
 
         public void Scan(string item)
@@ -23,12 +23,17 @@
                 throw new MissingDataException(item);
             }
 
-            this.items.Add(this.products[item]);
+            var product = this.products[item];
+
+            this.items.AddOrUpdate(item, new BasketItem(1, product),
+                (s, basketItem) => basketItem with {Quantity = basketItem.Quantity + 1});
         }
 
         public int GetTotalPrice()
         {
-            return this.items.Sum(i => i.UnitPrice);
+            return this.items.Sum(i => i.Value.Quantity * i.Value.Product.UnitPrice);
         }
+
+        private record BasketItem(int Quantity, Product Product);
     }
 }
