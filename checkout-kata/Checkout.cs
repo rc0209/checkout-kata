@@ -31,9 +31,15 @@
 
         public int GetTotalPrice()
         {
-            return this.items.Sum(i => i.Value.Quantity * i.Value.Product.UnitPrice);
+            return this.items.Sum(i => i.Value.TotalPrice());
         }
 
-        private record BasketItem(int Quantity, Product Product);
+        private record BasketItem(int Quantity, Product Product)
+        {
+            internal int TotalPrice()
+            {
+                return this.Quantity * this.Product.UnitPrice;
+            }
+        }
     }
 }
