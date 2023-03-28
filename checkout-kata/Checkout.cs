@@ -1,5 +1,6 @@
 ﻿namespace checkout_kata
 {
+    using System;
     using System.Collections.Concurrent;
     using System.Collections.Generic;
     using System.Linq;
@@ -48,7 +49,8 @@
                     return Product.OfferPrice.UnitPrice;
                 }
 
-                return 0;
+                var (quotient, remainder) = Math.DivRem(this.Quantity, this.Product.OfferPrice.Quantity);
+                return (quotient * this.Product.OfferPrice.UnitPrice) + (remainder * this.Product.UnitPrice);
             }
         }
     }
