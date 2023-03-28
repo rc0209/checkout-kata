@@ -38,7 +38,12 @@
         {
             internal int TotalPrice()
             {
-                return this.Quantity * this.Product.UnitPrice;
+                if (this.Product.OfferPrice == null || this.Quantity < this.Product.OfferPrice.Quantity)
+                {
+                    return this.Quantity * this.Product.UnitPrice;
+                }
+
+                return 0;
             }
         }
     }
