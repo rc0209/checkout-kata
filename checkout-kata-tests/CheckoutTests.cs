@@ -63,18 +63,36 @@ namespace checkout_kata_tests
         [Fact]
         public void ScanningMultipleItemsGivesCorrectPrice()
         {
-            var sku1 = "A";
-            var unitPrice1 = 50;
-            var sku2 = "B";
-            var unitPrice2 = 30;
+            var skuA = "A";
+            var unitPriceA = 50;
+            var skuB = "B";
+            var unitPriceB = 30;
 
-            var sut = new Checkout(new ProductBuilder().WithSku(sku1).WithUnitPrice(unitPrice1).Build(),
-                new ProductBuilder().WithSku(sku2).WithUnitPrice(unitPrice2).Build());
+            var sut = new Checkout(new ProductBuilder().WithSku(skuA).WithUnitPrice(unitPriceA).Build(),
+                new ProductBuilder().WithSku(skuB).WithUnitPrice(unitPriceB).Build());
 
-            sut.Scan(sku1);
-            sut.Scan(sku2);
+            sut.Scan(skuA);
+            sut.Scan(skuB);
 
-            sut.GetTotalPrice().Should().Be(unitPrice1 + unitPrice2);
+            sut.GetTotalPrice().Should().Be(unitPriceA + unitPriceB);
+        }
+
+        [Fact]
+        public void ScanningMultipleItemsInAnyOrderGivesCorrectPrice()
+        {
+            var skuA = "A";
+            var unitPriceA = 50;
+            var skuB = "B";
+            var unitPriceB = 30;
+
+            var sut = new Checkout(new ProductBuilder().WithSku(skuA).WithUnitPrice(unitPriceA).Build(),
+                new ProductBuilder().WithSku(skuB).WithUnitPrice(unitPriceB).Build());
+
+            sut.Scan(skuB);
+            sut.Scan(skuA);
+            sut.Scan(skuB);
+
+            sut.GetTotalPrice().Should().Be(unitPriceB + unitPriceA + unitPriceB);
         }
     }
 }
