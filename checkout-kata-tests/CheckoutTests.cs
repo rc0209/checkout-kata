@@ -8,6 +8,7 @@ namespace checkout_kata_tests
 
     using Xunit;
 
+    // todo :  move some of the magic strings/numbers into constants for clarity
     public class CheckoutTests
     {
         [Fact]

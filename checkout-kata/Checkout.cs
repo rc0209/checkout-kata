@@ -13,12 +13,14 @@
 
         public Checkout(params Product[] products)
         {
+            // todo: handle cases where product sku exists multiple times
             this.products = products.ToDictionary(k => k.Sku, v => v);
             this.items = new ConcurrentDictionary<string, BasketItem>();
         }
 
         public void Scan(string item)
         {
+            // todo: handle case sensitivity
             if (!this.products.ContainsKey(item))
             {
                 throw new MissingDataException(item);
