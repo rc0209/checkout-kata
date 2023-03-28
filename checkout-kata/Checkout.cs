@@ -15,7 +15,10 @@
 
         public void Scan(string item)
         {
-            throw new System.NotImplementedException();
+            if (!this.products.ContainsKey(item))
+            {
+                throw new MissingDataException(item);
+            }
         }
 
         public int GetTotalPrice()
